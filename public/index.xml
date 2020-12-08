@@ -6,7 +6,16 @@
     <description>Recent content on A Hugo website</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Fri, 30 Dec 2016 21:49:57 -0700</lastBuildDate><atom:link href="/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Tue, 08 Dec 2020 00:00:00 +0000</lastBuildDate><atom:link href="/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Avatar</title>
+      <link>/2020/12/08/avatar/</link>
+      <pubDate>Tue, 08 Dec 2020 00:00:00 +0000</pubDate>
+      
+      <guid>/2020/12/08/avatar/</guid>
+      <description>avatar &amp;lt;- readr::read_csv(&amp;#39;https://raw.githubusercontent.com/rfordatascience/tidytuesda y/master/data/2020/2020-08-11/avatar.csv&amp;#39;) avatar </description>
+    </item>
+    
     <item>
       <title>A Plain Markdown Post</title>
       <link>/2016/12/30/a-plain-markdown-post/</link>

@@ -1,6 +1,6 @@
 ---
 title: Avatar Data Set Analysis
-author: ~
+author: "Avatar Fan"
 date: '2020-12-08'
 slug: avatar-data-set-analysis
 categories: []
@@ -11,4 +11,33 @@ tags: []
 <script src="index_files/anchor-sections/anchor-sections.js"></script>
 
 
-
+<p><em>Avatar: The Last Airbender</em> has always been my favorite TV show. World felt alive, the characters are fleshed out, and the magic feels fun and natural. Thanks to the <em>Avatar: The Last Airbender</em> data set on tidytuesday, we are able to go through every line of every script for every episode and do some data analysis.</p>
+<div id="special-move" class="section level2">
+<h2>“Special Move”</h2>
+<p>In other kids shows, like <em>Power Rangers</em>, the main characters and will yell say their special moves often, enough to have it ingrained into your head. How often does <em>Avatar: The Last Airbender</em> do this, and who does it the most?</p>
+<pre class="r"><code>tuesdata &lt;- tidytuesdayR::tt_load(&#39;2020-08-11&#39;)</code></pre>
+<pre><code>## 
+##  Downloading file 1 of 2: `avatar.csv`
+##  Downloading file 2 of 2: `scene_description.csv`</code></pre>
+<pre class="r"><code>tuesdata &lt;- tidytuesdayR::tt_load(2020, week = 33)</code></pre>
+<pre><code>## 
+##  Downloading file 1 of 2: `avatar.csv`
+##  Downloading file 2 of 2: `scene_description.csv`</code></pre>
+<pre class="r"><code>avatar &lt;- tuesdata$avatar
+avatar</code></pre>
+<pre><code>## # A tibble: 13,385 x 11
+##       id book  book_num chapter chapter_num character full_text character_words
+##    &lt;dbl&gt; &lt;chr&gt;    &lt;dbl&gt; &lt;chr&gt;         &lt;dbl&gt; &lt;chr&gt;     &lt;chr&gt;     &lt;chr&gt;          
+##  1     1 Water        1 The Bo…           1 Katara    Water. E… Water. Earth. …
+##  2     2 Water        1 The Bo…           1 Scene De… As the t… &lt;NA&gt;           
+##  3     3 Water        1 The Bo…           1 Sokka     It&#39;s not… It&#39;s not getti…
+##  4     4 Water        1 The Bo…           1 Scene De… &quot;The sho… &lt;NA&gt;           
+##  5     5 Water        1 The Bo…           1 Katara    [Happily… Sokka, look!   
+##  6     6 Water        1 The Bo…           1 Sokka     [Close-u… Sshh! Katara, …
+##  7     7 Water        1 The Bo…           1 Scene De… Behind S… &lt;NA&gt;           
+##  8     8 Water        1 The Bo…           1 Katara    [Struggl… But, Sokka! I …
+##  9     9 Water        1 The Bo…           1 Scene De… The bubb… &lt;NA&gt;           
+## 10    10 Water        1 The Bo…           1 Katara    [Exclaim… Hey!           
+## # … with 13,375 more rows, and 3 more variables: writer &lt;chr&gt;, director &lt;chr&gt;,
+## #   imdb_rating &lt;dbl&gt;</code></pre>
+</div>

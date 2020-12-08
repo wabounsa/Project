@@ -1,0 +1,23 @@
+---
+title: Avatar Data Set Analysis
+author: "Avatar Fan"
+date: '2020-12-08'
+slug: avatar-data-set-analysis
+categories: []
+tags: []
+---
+
+*Avatar: The Last Airbender* has always been my favorite TV show. World felt alive, the characters are fleshed out, and the magic feels fun and natural. Thanks to the *Avatar: The Last Airbender* data set on tidytuesday, we are able to go through every line of every script for every episode and do some data analysis.
+
+## "Special Move"
+
+In other kids shows, like *Power Rangers*, the main characters and will yell say their special moves often, enough to have it ingrained into your head. How often does *Avatar: The Last Airbender* do this, and who does it the most?
+
+```{r, message=FALSE}
+tuesdata <- tidytuesdayR::tt_load('2020-08-11')
+tuesdata <- tidytuesdayR::tt_load(2020, week = 33)
+avatar <- tuesdata$avatar
+avatar
+Katara <- avatar %>%
+  filter(character == "Katara")
+```
