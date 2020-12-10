@@ -1,23 +1,151 @@
 ---
-title: Avatar Data Set Analysis
+title: "Avatar Data Set Analysis"
 author: "Avatar Fan"
 date: '2020-12-08'
-slug: avatar-data-set-analysis
+output:
+  html_document:
+    df_print: paged
 categories: []
 tags: []
+slug: avatar-data-set-analysis
 ---
 
 *Avatar: The Last Airbender* has always been my favorite TV show. World felt alive, the characters are fleshed out, and the magic feels fun and natural. Thanks to the *Avatar: The Last Airbender* data set on tidytuesday, we are able to go through every line of every script for every episode and do some data analysis.
 
-## "Special Move"
+```{r, message=FALSE, include=FALSE}
+library(tidyverse)
+tuesdata <- tidytuesdayR::tt_load('2020-08-11')
+tuesdata <- tidytuesdayR::tt_load(2020, week = 33)
+avatar <- tuesdata$avatar
+```
+
+## "Special Move!"
 
 In other kids shows, like *Power Rangers*, the main characters and will yell say their special moves often, enough to have it ingrained into your head. How often does *Avatar: The Last Airbender* do this, and who does it the most?
 
 ```{r, message=FALSE}
-tuesdata <- tidytuesdayR::tt_load('2020-08-11')
-tuesdata <- tidytuesdayR::tt_load(2020, week = 33)
-avatar <- tuesdata$avatar
-avatar
+library(tidyverse)
+
 Katara <- avatar %>%
-  filter(character == "Katara")
+  filter(!is.na(character_words)) %>%
+  filter(character == "Katara") %>%
+  filter(str_detect(character_words, regex("waterbend", ignore_case = TRUE)))
+
+Katara
+
+grep(Katara, "water")
 ```
+
+## Highest and Lowest Rated Episode for Each Season
+
+*Avatar: The Last Airbender* is a great TV show, but as with anything, there will always be favorites and least favorites. What episodes are the highest and lowest rated, and what is it for each season?
+
+## Ratings Over Time
+
+Does *Avatar: The Last Airbender* improve or get worst with time? As with any shows, it'll have valleys and peaks, so where do they occur?
+
+```{r, message=FALSE}
+library(patchwork)
+library(tvthemes)
+
+seasonrating <- avatar %>%
+  select(book_num, chapter_num, imdb_rating) %>%
+  distinct()
+
+waterrating <- seasonrating %>%
+  filter(book_num == 1) %>%
+  ggplot(aes(x = chapter_num, y = imdb_rating, color = imdb_rating)) +
+  geom_point(aes(color = imdb_rating))
+
+earthrating <- seasonrating %>%
+  filter(book_num == 2) %>%
+  ggplot(aes(x = chapter_num, y = imdb_rating, color = imdb_rating)) +
+  geom_point()
+
+firerating <- seasonrating %>%
+  filter(book_num == 1) %>%
+  ggplot(aes(x = chapter_num, y = imdb_rating, color = imdb_rating)) +
+  geom_point() +
+  geom_line()
+waterrating
+firerating
+```
+
+## Most Chattiest Characters
+
+Who talks the most in the show? There are many candidates, like Azula and her silver tongue, Katara saying the opening each episode, and Sokka with his witty quips. But who says the most lines in the show?
+
+```{r, message=FALSE}
+library(ggplot2)
+library(patchwork)
+library(tvthemes)
+
+lines <- avatar %>%
+  filter(!is.na(character_words)) %>%
+  group_by(character,book) %>%
+  summarise(Lines = n()) %>% 
+  arrange(Lines, descending = TRUE)
+
+waterlines <- lines %>%
+  filter(book == "Water") %>%
+  tail(n = 5) %>%
+  ggplot(aes(x = character, y = Lines, fill = character)) +
+  geom_bar(aes(reorder(character, Lines)), stat = 'identity') +
+  theme_avatar() +
+  coord_flip() +
+  scale_fill_avatar(palette = "WaterTribe") +
+  theme(legend.position = "none")
+
+earthlines <- lines %>%
+  filter(book == "Earth") %>%
+  tail(n = 5) %>%
+  ggplot(aes(x = character, y = Lines, fill = character)) +
+  geom_bar(aes(reorder(character, Lines)), stat = 'identity') +
+  theme_avatar() +
+  coord_flip() +
+  scale_fill_avatar(palette = "EarthKingdom") +
+  theme(legend.position = "none")
+
+firelines <- lines %>%
+  filter(book == "Fire") %>%
+  tail(n = 5) %>%
+  ggplot(aes(x = character, y = Lines, fill = character)) +
+  geom_bar(aes(reorder(character, Lines)), stat = 'identity') +
+  theme_avatar() +
+  coord_flip() +
+  scale_fill_avatar(palette = "FireNation") +
+  theme(legend.position = "none")
+
+earthlines
+
+waterlines + earthlines + firelines
+```
+
+## Best Writer(s) Award (According to the Viewers)
+
+The writers of this show are some of the best. They are able to write a compelling story line while adding funny jokes and character growth along the way. But who, or which group, has the highest average rated episodes?
+
+```{r, message=FALSE}
+writer <- avatar %>%
+  select(book_num, chapter_num,writer, imdb_rating) %>%
+  group_by(writer) %>%
+  summarise(score = mean(imdb_rating)) %>%
+  filter(!is.na(score))  %>%
+  arrange(score, descending = TRUE)
+   #mutate(str_extract(writer, regex("[^,]*{1}")))
+
+writer
+
+
+ggplot(data = tail(writer, 10), aes(x = writer, y = score, fill = writer)) +
+  geom_bar(aes(reorder(writer, score)), stat = 'identity') +
+  xlab("Average IMDB Score") +
+  ylab("Writers") +
+  scale_fill_discrete(labels = c("apple","banana")) +
+  ggtitle("Average IMDB Score for Each Writer(s)") +
+  theme(axis.text.x = element_blank())
+
+```
+
+
+

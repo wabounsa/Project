@@ -1,0 +1,81 @@
+---
+title: Password Data Analysis
+author: "William A. Bounsavy"
+date: '2020-12-08'
+slug: password-data-analysis
+categories: []
+tags: []
+---
+
+The password data set from tidytuesday contains a list of many commonly used passwords.
+
+```{r}
+library(tidyverse)
+tuesdata <- tidytuesdayR::tt_load('2020-01-14') 
+tuesdata <- tidytuesdayR::tt_load(2020, week = 3)
+passwords <- tuesdata$passwords
+passwords 
+```
+
+
+## Easiest Passwords to Crack
+
+The data set may sort the data set on most common, but what about easiest to crack. Probably the first 10, since they are the most common, but what about the rest?
+
+```{r}
+crack <- passwords %>%
+  tail(497) %>%
+  filter(time_unit == "minutes") %>%
+  arrange(value) %>%
+  mutate(seconds = value*60)
+
+seconds <- passwords %>%
+  tail(497) %>%
+  filter(time_unit == "seconds") %>%
+  arrange(value)
+
+seconds
+crack
+```
+
+## Easiest Passwords to Crack
+
+The passwords data set also gives each password a category, as in whether it is password-related, an animal, or simple-alphanumeric. What category is the most commonly used?
+
+```{r}
+dat <- passwords %>%
+  filter(!is.na(category)) %>%
+  group_by(category) %>%
+  summarise(count = n())
+
+ggplot(data = dat, aes(x =  category, y = count)) +
+  geom_bar(aes(reorder(category, count)),stat = "identity") +
+  coord_flip()
+```
+
+
+## Strongest Password
+
+We know which categories are the most common and the easiest ones to crack, but what about the strongest password? Each password in the data set comes with their own separate strength score, so which one is the strongest?
+
+```{r}
+strength <- passwords %>%
+  arrange(desc(strength)) %>% 
+  head(15)
+
+weak <- passwords %>%
+  arrange(desc(strength)) %>% 
+  tail(492) %>%
+  head(25)
+
+ggplot(strength, aes(x = password, y = strength)) +
+  geom_bar(aes(reorder(password, strength)), stat = "identity") +
+  coord_flip()
+
+ggplot(weak, aes(x = password, y = offline_crack_sec)) +
+  geom_bar(aes(reorder(password, strength)), stat = "identity") +
+  coord_flip()
+
+strength
+weak
+```

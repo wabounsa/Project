@@ -1,10 +1,13 @@
 ---
-title: Avatar Data Set Analysis
+title: "Avatar Data Set Analysis"
 author: "Avatar Fan"
 date: '2020-12-08'
-slug: avatar-data-set-analysis
+output:
+  html_document:
+    df_print: paged
 categories: []
 tags: []
+slug: avatar-data-set-analysis
 ---
 
 <link href="index_files/anchor-sections/anchor-sections.css" rel="stylesheet" />
@@ -13,31 +16,153 @@ tags: []
 
 <p><em>Avatar: The Last Airbender</em> has always been my favorite TV show. World felt alive, the characters are fleshed out, and the magic feels fun and natural. Thanks to the <em>Avatar: The Last Airbender</em> data set on tidytuesday, we are able to go through every line of every script for every episode and do some data analysis.</p>
 <div id="special-move" class="section level2">
-<h2>“Special Move”</h2>
+<h2>“Special Move!”</h2>
 <p>In other kids shows, like <em>Power Rangers</em>, the main characters and will yell say their special moves often, enough to have it ingrained into your head. How often does <em>Avatar: The Last Airbender</em> do this, and who does it the most?</p>
-<pre class="r"><code>tuesdata &lt;- tidytuesdayR::tt_load(&#39;2020-08-11&#39;)</code></pre>
-<pre><code>## 
-##  Downloading file 1 of 2: `avatar.csv`
-##  Downloading file 2 of 2: `scene_description.csv`</code></pre>
-<pre class="r"><code>tuesdata &lt;- tidytuesdayR::tt_load(2020, week = 33)</code></pre>
-<pre><code>## 
-##  Downloading file 1 of 2: `avatar.csv`
-##  Downloading file 2 of 2: `scene_description.csv`</code></pre>
-<pre class="r"><code>avatar &lt;- tuesdata$avatar
-avatar</code></pre>
-<pre><code>## # A tibble: 13,385 x 11
+<pre class="r"><code>library(tidyverse)
+
+Katara &lt;- avatar %&gt;%
+  filter(!is.na(character_words)) %&gt;%
+  filter(character == &quot;Katara&quot;) %&gt;%
+  filter(str_detect(character_words, regex(&quot;waterbend&quot;, ignore_case = TRUE)))
+
+Katara</code></pre>
+<pre><code>## # A tibble: 33 x 11
 ##       id book  book_num chapter chapter_num character full_text character_words
 ##    &lt;dbl&gt; &lt;chr&gt;    &lt;dbl&gt; &lt;chr&gt;         &lt;dbl&gt; &lt;chr&gt;     &lt;chr&gt;     &lt;chr&gt;          
-##  1     1 Water        1 The Bo…           1 Katara    Water. E… Water. Earth. …
-##  2     2 Water        1 The Bo…           1 Scene De… As the t… &lt;NA&gt;           
-##  3     3 Water        1 The Bo…           1 Sokka     It&#39;s not… It&#39;s not getti…
-##  4     4 Water        1 The Bo…           1 Scene De… &quot;The sho… &lt;NA&gt;           
-##  5     5 Water        1 The Bo…           1 Katara    [Happily… Sokka, look!   
-##  6     6 Water        1 The Bo…           1 Sokka     [Close-u… Sshh! Katara, …
-##  7     7 Water        1 The Bo…           1 Scene De… Behind S… &lt;NA&gt;           
-##  8     8 Water        1 The Bo…           1 Katara    [Struggl… But, Sokka! I …
-##  9     9 Water        1 The Bo…           1 Scene De… The bubb… &lt;NA&gt;           
-## 10    10 Water        1 The Bo…           1 Katara    [Exclaim… Hey!           
-## # … with 13,375 more rows, and 3 more variables: writer &lt;chr&gt;, director &lt;chr&gt;,
+##  1    14 Water        1 The Bo…           1 Katara    &quot;[Cut to… &quot;It&#39;s not \&quot;ma…
+##  2   180 Water        1 The Bo…           1 Katara    [Amused.… Hehehe, Aang, …
+##  3   182 Water        1 The Bo…           1 Katara    [Sadly.]… No. You&#39;re loo…
+##  4   244 Water        1 The Av…           2 Katara    [Angrily… To find a wate…
+##  5   261 Water        1 The Av…           2 Katara    [Roundin… You happy now?…
+##  6   395 Water        1 The Av…           2 Katara    [Brighte… Well, if we go…
+##  7   500 Water        1 The So…           3 Katara    [Innocen… Uh ... Just a …
+##  8   561 Water        1 The So…           3 Katara    [Camera … And this one&#39;s…
+##  9  1255 Water        1 Impris…           6 Katara    How can … How can you sa…
+## 10  1913 Water        1 The Wa…           9 Katara    [Smiling… Look at this, …
+## # … with 23 more rows, and 3 more variables: writer &lt;chr&gt;, director &lt;chr&gt;,
 ## #   imdb_rating &lt;dbl&gt;</code></pre>
+<pre class="r"><code>grep(Katara, &quot;water&quot;)</code></pre>
+<pre><code>## Warning in grep(Katara, &quot;water&quot;): argument &#39;pattern&#39; has length &gt; 1 and only the
+## first element will be used</code></pre>
+<pre><code>## integer(0)</code></pre>
+</div>
+<div id="highest-and-lowest-rated-episode-for-each-season" class="section level2">
+<h2>Highest and Lowest Rated Episode for Each Season</h2>
+<p><em>Avatar: The Last Airbender</em> is a great TV show, but as with anything, there will always be favorites and least favorites. What episodes are the highest and lowest rated, and what is it for each season?</p>
+</div>
+<div id="ratings-over-time" class="section level2">
+<h2>Ratings Over Time</h2>
+<p>Does <em>Avatar: The Last Airbender</em> improve or get worst with time? As with any shows, it’ll have valleys and peaks, so where do they occur?</p>
+<pre class="r"><code>library(patchwork)
+library(tvthemes)
+
+seasonrating &lt;- avatar %&gt;%
+  select(book_num, chapter_num, imdb_rating) %&gt;%
+  distinct()
+
+waterrating &lt;- seasonrating %&gt;%
+  filter(book_num == 1) %&gt;%
+  ggplot(aes(x = chapter_num, y = imdb_rating, color = imdb_rating)) +
+  geom_point(aes(color = imdb_rating))
+
+earthrating &lt;- seasonrating %&gt;%
+  filter(book_num == 2) %&gt;%
+  ggplot(aes(x = chapter_num, y = imdb_rating, color = imdb_rating)) +
+  geom_point()
+
+firerating &lt;- seasonrating %&gt;%
+  filter(book_num == 1) %&gt;%
+  ggplot(aes(x = chapter_num, y = imdb_rating, color = imdb_rating)) +
+  geom_point() +
+  geom_line()
+waterrating</code></pre>
+<pre><code>## Warning: Removed 1 rows containing missing values (geom_point).</code></pre>
+<p><img src="index_files/figure-html/unnamed-chunk-3-1.png" width="672" /></p>
+<pre class="r"><code>firerating</code></pre>
+<pre><code>## Warning: Removed 1 rows containing missing values (geom_point).</code></pre>
+<pre><code>## Warning: Removed 1 rows containing missing values (geom_path).</code></pre>
+<p><img src="index_files/figure-html/unnamed-chunk-3-2.png" width="672" /></p>
+</div>
+<div id="most-chattiest-characters" class="section level2">
+<h2>Most Chattiest Characters</h2>
+<p>Who talks the most in the show? There are many candidates, like Azula and her silver tongue, Katara saying the opening each episode, and Sokka with his witty quips. But who says the most lines in the show?</p>
+<pre class="r"><code>library(ggplot2)
+library(patchwork)
+library(tvthemes)
+
+lines &lt;- avatar %&gt;%
+  filter(!is.na(character_words)) %&gt;%
+  group_by(character,book) %&gt;%
+  summarise(Lines = n()) %&gt;% 
+  arrange(Lines, descending = TRUE)
+
+waterlines &lt;- lines %&gt;%
+  filter(book == &quot;Water&quot;) %&gt;%
+  tail(n = 5) %&gt;%
+  ggplot(aes(x = character, y = Lines, fill = character)) +
+  geom_bar(aes(reorder(character, Lines)), stat = &#39;identity&#39;) +
+  theme_avatar() +
+  coord_flip() +
+  scale_fill_avatar(palette = &quot;WaterTribe&quot;) +
+  theme(legend.position = &quot;none&quot;)
+
+earthlines &lt;- lines %&gt;%
+  filter(book == &quot;Earth&quot;) %&gt;%
+  tail(n = 5) %&gt;%
+  ggplot(aes(x = character, y = Lines, fill = character)) +
+  geom_bar(aes(reorder(character, Lines)), stat = &#39;identity&#39;) +
+  theme_avatar() +
+  coord_flip() +
+  scale_fill_avatar(palette = &quot;EarthKingdom&quot;) +
+  theme(legend.position = &quot;none&quot;)
+
+firelines &lt;- lines %&gt;%
+  filter(book == &quot;Fire&quot;) %&gt;%
+  tail(n = 5) %&gt;%
+  ggplot(aes(x = character, y = Lines, fill = character)) +
+  geom_bar(aes(reorder(character, Lines)), stat = &#39;identity&#39;) +
+  theme_avatar() +
+  coord_flip() +
+  scale_fill_avatar(palette = &quot;FireNation&quot;) +
+  theme(legend.position = &quot;none&quot;)
+
+earthlines</code></pre>
+<p><img src="index_files/figure-html/unnamed-chunk-4-1.png" width="672" /></p>
+<pre class="r"><code>waterlines + earthlines + firelines</code></pre>
+<p><img src="index_files/figure-html/unnamed-chunk-4-2.png" width="672" /></p>
+</div>
+<div id="best-writers-award-according-to-the-viewers" class="section level2">
+<h2>Best Writer(s) Award (According to the Viewers)</h2>
+<p>The writers of this show are some of the best. They are able to write a compelling story line while adding funny jokes and character growth along the way. But who, or which group, has the highest average rated episodes?</p>
+<pre class="r"><code>writer &lt;- avatar %&gt;%
+  select(book_num, chapter_num,writer, imdb_rating) %&gt;%
+  group_by(writer) %&gt;%
+  summarise(score = mean(imdb_rating)) %&gt;%
+  filter(!is.na(score))  %&gt;%
+  arrange(score, descending = TRUE)
+   #mutate(str_extract(writer, regex(&quot;[^,]*{1}&quot;)))
+
+writer</code></pre>
+<pre><code>## # A tibble: 22 x 2
+##    writer                                                                  score
+##    &lt;chr&gt;                                                                   &lt;dbl&gt;
+##  1 James Eagan                                                              7.8 
+##  2 Ian Wilcox                                                               7.9 
+##  3 John O&#39;Bryan, Aaron Ehasz                                                7.9 
+##  4 Matthew Hubbard                                                          8   
+##  5 ‎Michael Dante DiMartino, Bryan Konietzko, Aaron Ehasz, Peter Goldfing…   8.1 
+##  6 Nick Malis                                                               8.2 
+##  7 John O&#39;Bryan                                                             8.30
+##  8 Michael Dante DiMartino, Bryan Konietzko, Aaron Ehasz, Peter Goldfinge…  8.3 
+##  9 Joshua Hamilton, Michael Dante DiMartino                                 8.4 
+## 10 Katie Mattila                                                            8.5 
+## # … with 12 more rows</code></pre>
+<pre class="r"><code>ggplot(data = tail(writer, 10), aes(x = writer, y = score, fill = writer)) +
+  geom_bar(aes(reorder(writer, score)), stat = &#39;identity&#39;) +
+  xlab(&quot;Average IMDB Score&quot;) +
+  ylab(&quot;Writers&quot;) +
+  scale_fill_discrete(labels = c(&quot;apple&quot;,&quot;banana&quot;)) +
+  ggtitle(&quot;Average IMDB Score for Each Writer(s)&quot;) +
+  theme(axis.text.x = element_blank())</code></pre>
+<p><img src="index_files/figure-html/unnamed-chunk-5-1.png" width="672" /></p>
 </div>
