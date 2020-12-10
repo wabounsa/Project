@@ -1,5 +1,5 @@
 ---
-title: Password Data Analysis
+title: "Password Data Analysis"
 author: "William A. Bounsavy"
 date: '2020-12-08'
 slug: password-data-analysis
@@ -38,6 +38,8 @@ seconds
 crack
 ```
 
+We can see with the two data sets that a lot of the passwords that are easily crackable have around the same value to be cracked.
+
 ## Easiest Passwords to Crack
 
 The passwords data set also gives each password a category, as in whether it is password-related, an animal, or simple-alphanumeric. What category is the most commonly used?
@@ -52,7 +54,7 @@ ggplot(data = dat, aes(x =  category, y = count)) +
   geom_bar(aes(reorder(category, count)),stat = "identity") +
   coord_flip()
 ```
-
+The category commonly used and is easiest to crack seems to be the name category, it almost doubles the cool-macho category. This makes sense, peoplelike to use names when they are making their password. Another interesting thing is that simple-alphanumeric passwords are also at the top of the list. This is probably due to them being easy to remember, things like 1111 and 2222 and 1234 can be easily written down and remembered. Phones use those passwords a lot, in fact.
 
 ## Strongest Password
 
@@ -79,3 +81,8 @@ ggplot(weak, aes(x = password, y = offline_crack_sec)) +
 strength
 weak
 ```
+We can see that in the top 15 strongest passwords on the list there is a trend. For the first few, the strongest passwords are simple passwords with just a word and then numbers after it. This makes sure that the password is easy to remember but hard to break.
+
+#Conclusion
+
+TBD

@@ -1,5 +1,5 @@
 ---
-title: Password Data Analysis
+title: "Password Data Analysis"
 author: "William A. Bounsavy"
 date: '2020-12-08'
 slug: password-data-analysis
@@ -95,6 +95,7 @@ seconds</code></pre>
 ##  9   198 asdf     simple-…  7.92 minutes         0.00000475      199        6
 ## 10   216 jack     name      7.92 minutes         0.00000475      217        6
 ## # … with 39 more rows, and 2 more variables: font_size &lt;dbl&gt;, seconds &lt;dbl&gt;</code></pre>
+<p>We can see with the two data sets that a lot of the passwords that are easily crackable have around the same value to be cracked.</p>
 </div>
 <div id="easiest-passwords-to-crack-1" class="section level2">
 <h2>Easiest Passwords to Crack</h2>
@@ -107,7 +108,8 @@ seconds</code></pre>
 <pre class="r"><code>ggplot(data = dat, aes(x =  category, y = count)) +
   geom_bar(aes(reorder(category, count)),stat = &quot;identity&quot;) +
   coord_flip()</code></pre>
-<p><img src="index_files/figure-html/unnamed-chunk-3-1.png" width="672" /></p>
+<p><img src="index_files/figure-html/unnamed-chunk-3-1.png" width="672" />
+The category commonly used and is easiest to crack seems to be the name category, it almost doubles the cool-macho category. This makes sense, peoplelike to use names when they are making their password. Another interesting thing is that simple-alphanumeric passwords are also at the top of the list. This is probably due to them being easy to remember, things like 1111 and 2222 and 1234 can be easily written down and remembered. Phones use those passwords a lot, in fact.</p>
 </div>
 <div id="strongest-password" class="section level2">
 <h2>Strongest Password</h2>
@@ -164,4 +166,7 @@ ggplot(strength, aes(x = password, y = strength)) +
 ##  9   398 garfield name      6.91 years                 2.17      399       10
 ## 10   450 redwings sport     6.91 years                 2.17      452       10
 ## # … with 15 more rows, and 1 more variable: font_size &lt;dbl&gt;</code></pre>
+<p>We can see that in the top 15 strongest passwords on the list there is a trend. For the first few, the strongest passwords are simple passwords with just a word and then numbers after it. This makes sure that the password is easy to remember but hard to break.</p>
+<p>#Conclusion</p>
+<p>TBD</p>
 </div>
