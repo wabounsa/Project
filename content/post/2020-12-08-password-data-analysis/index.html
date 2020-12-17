@@ -2,9 +2,10 @@
 title: "Password Data Analysis"
 author: "William A. Bounsavy"
 date: '2020-12-08'
-slug: password-data-analysis
+output: pdf_document
 categories: []
 tags: []
+slug: password-data-analysis
 ---
 
 <link href="index_files/anchor-sections/anchor-sections.css" rel="stylesheet" />
@@ -12,55 +13,10 @@ tags: []
 
 
 <p>The password data set from tidytuesday contains a list of many commonly used passwords.</p>
-<pre class="r"><code>library(tidyverse)</code></pre>
-<pre><code>## ── Attaching packages ─────────────────────────────────────── tidyverse 1.3.0 ──</code></pre>
-<pre><code>## ✓ ggplot2 3.2.1     ✓ purrr   0.3.3
-## ✓ tibble  2.1.3     ✓ dplyr   1.0.2
-## ✓ tidyr   1.0.0     ✓ stringr 1.4.0
-## ✓ readr   1.3.1     ✓ forcats 0.4.0</code></pre>
-<pre><code>## ── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
-## x dplyr::filter() masks stats::filter()
-## x dplyr::lag()    masks stats::lag()</code></pre>
-<pre class="r"><code>tuesdata &lt;- tidytuesdayR::tt_load(&#39;2020-01-14&#39;) </code></pre>
-<pre><code>## --- Compiling #TidyTuesday Information for 2020-01-14 ----</code></pre>
-<pre><code>## --- There is 1 file available ---</code></pre>
-<pre><code>## --- Starting Download ---</code></pre>
-<pre><code>## 
-##  Downloading file 1 of 1: `passwords.csv`</code></pre>
-<pre><code>## --- Download complete ---</code></pre>
-<pre class="r"><code>tuesdata &lt;- tidytuesdayR::tt_load(2020, week = 3)</code></pre>
-<pre><code>## --- Compiling #TidyTuesday Information for 2020-01-14 ----</code></pre>
-<pre><code>## --- There is 1 file available ---</code></pre>
-<pre><code>## --- Starting Download ---</code></pre>
-<pre><code>## 
-##  Downloading file 1 of 1: `passwords.csv`</code></pre>
-<pre><code>## --- Download complete ---</code></pre>
-<pre class="r"><code>passwords &lt;- tuesdata$passwords
-passwords </code></pre>
-<pre><code>## # A tibble: 507 x 9
-##     rank password category value time_unit offline_crack_s… rank_alt strength
-##    &lt;dbl&gt; &lt;chr&gt;    &lt;chr&gt;    &lt;dbl&gt; &lt;chr&gt;                &lt;dbl&gt;    &lt;dbl&gt;    &lt;dbl&gt;
-##  1     1 password passwor…  6.91 years          2.17               1        8
-##  2     2 123456   simple-… 18.5  minutes        0.0000111          2        4
-##  3     3 12345678 simple-…  1.29 days           0.00111            3        4
-##  4     4 1234     simple-… 11.1  seconds        0.000000111        4        4
-##  5     5 qwerty   simple-…  3.72 days           0.00321            5        8
-##  6     6 12345    simple-…  1.85 minutes        0.00000111         6        4
-##  7     7 dragon   animal    3.72 days           0.00321            7        8
-##  8     8 baseball sport     6.91 years          2.17               8        4
-##  9     9 football sport     6.91 years          2.17               9        7
-## 10    10 letmein  passwor…  3.19 months         0.0835            10        8
-## # … with 497 more rows, and 1 more variable: font_size &lt;dbl&gt;</code></pre>
 <div id="easiest-passwords-to-crack" class="section level2">
 <h2>Easiest Passwords to Crack</h2>
-<p>The data set may sort the data set on most common, but what about easiest to crack. Probably the first 10, since they are the most common, but what about the rest?</p>
-<pre class="r"><code>crack &lt;- passwords %&gt;%
-  tail(497) %&gt;%
-  filter(time_unit == &quot;minutes&quot;) %&gt;%
-  arrange(value) %&gt;%
-  mutate(seconds = value*60)
-
-seconds &lt;- passwords %&gt;%
+<p>The data set may sort the data set on most common, but what about easiest to crack. Probably the first 10, since they are the most common, but what about the rest? Keep in mind, we will be using the value variable as the basis for this analysis, which, in conjunction with the time_unit variable, states how fast it is to guess or solve this password online.</p>
+<pre class="r"><code>seconds &lt;- passwords %&gt;%
   tail(497) %&gt;%
   filter(time_unit == &quot;seconds&quot;) %&gt;%
   arrange(value)
@@ -80,25 +36,10 @@ seconds</code></pre>
 ##  9   374 4444     simple-…  11.1 seconds        0.000000111      375        0
 ## 10   430 1313     simple-…  11.1 seconds        0.000000111      431        4
 ## # … with 1 more variable: font_size &lt;dbl&gt;</code></pre>
-<pre class="r"><code>crack</code></pre>
-<pre><code>## # A tibble: 49 x 10
-##     rank password category value time_unit offline_crack_s… rank_alt strength
-##    &lt;dbl&gt; &lt;chr&gt;    &lt;chr&gt;    &lt;dbl&gt; &lt;chr&gt;                &lt;dbl&gt;    &lt;dbl&gt;    &lt;dbl&gt;
-##  1   410 11111    simple-…  1.85 minutes         0.00000111      411        0
-##  2    34 test     passwor…  7.92 minutes         0.00000475       34        4
-##  3    35 pass     passwor…  7.92 minutes         0.00000475       35        3
-##  4    42 love     fluffy    7.92 minutes         0.00000475       42        6
-##  5    67 sexy     cool-ma…  7.92 minutes         0.00000475       67        6
-##  6   155 mike     name      7.92 minutes         0.00000475      155        6
-##  7   169 john     name      7.92 minutes         0.00000475      169        6
-##  8   189 blue     fluffy    7.92 minutes         0.00000475      189        6
-##  9   198 asdf     simple-…  7.92 minutes         0.00000475      199        6
-## 10   216 jack     name      7.92 minutes         0.00000475      217        6
-## # … with 39 more rows, and 2 more variables: font_size &lt;dbl&gt;, seconds &lt;dbl&gt;</code></pre>
-<p>We can see with the two data sets that a lot of the passwords that are easily crackable have around the same value to be cracked.</p>
+<p>When we filter through the passwords to find easiest to crack, we get a uniform time of 11.11 seconds, and when we look at the passwords themselves, we can see an obvious pattern. They are all in the simple-alphanumeric category, which means that they are just a string of numbers. And if you look more closely at the passwords themselves, you can see just how simple they are. The most variable of them only use two different numbers in the password, leading to very simple and easily crackable passwords.</p>
 </div>
-<div id="easiest-passwords-to-crack-1" class="section level2">
-<h2>Easiest Passwords to Crack</h2>
+<div id="common-password-categories" class="section level2">
+<h2>Common Password Categories</h2>
 <p>The passwords data set also gives each password a category, as in whether it is password-related, an animal, or simple-alphanumeric. What category is the most commonly used?</p>
 <pre class="r"><code>dat &lt;- passwords %&gt;%
   filter(!is.na(category)) %&gt;%
@@ -107,66 +48,28 @@ seconds</code></pre>
 <pre><code>## `summarise()` ungrouping output (override with `.groups` argument)</code></pre>
 <pre class="r"><code>ggplot(data = dat, aes(x =  category, y = count)) +
   geom_bar(aes(reorder(category, count)),stat = &quot;identity&quot;) +
-  coord_flip()</code></pre>
+  coord_flip() +
+  xlab(&quot;Number of Passwords&quot;) +
+  ylab(&quot;Password Category&quot;) +
+  ggtitle(&quot;Most Common Passwords by Category&quot;)</code></pre>
 <p><img src="index_files/figure-html/unnamed-chunk-3-1.png" width="672" />
-The category commonly used and is easiest to crack seems to be the name category, it almost doubles the cool-macho category. This makes sense, peoplelike to use names when they are making their password. Another interesting thing is that simple-alphanumeric passwords are also at the top of the list. This is probably due to them being easy to remember, things like 1111 and 2222 and 1234 can be easily written down and remembered. Phones use those passwords a lot, in fact.</p>
+To come up with this chart, we simply counted how many common passwords were in each category. The <strong>category</strong> variable tells us the theme of the password, for example, food passwords would be “burger” or “hotdog” while animal passwords would be “elephant” or “giraffe”. We can see from the graph that the most common password category is the <em>names</em> category, which include passwords like “mike” or “george” or “tom”. This would make since to be very high on the list; it is easier to remember your own name or the name of a loved one than it is to remember a random string of numbers and letters. However, since this is the highest category of names in the most common passwords data set, it would be best to avoid using names as passwords since they are so common. Interestingly, the <em>cool-macho</em> category appears high on the list, which includes names like “shadow” and “buster”.</p>
 </div>
 <div id="strongest-password" class="section level2">
 <h2>Strongest Password</h2>
-<p>We know which categories are the most common and the easiest ones to crack, but what about the strongest password? Each password in the data set comes with their own separate strength score, so which one is the strongest?</p>
+<p>We know which categories are the most common and the easiest ones to crack, but what about the strongest password? Each password in the data set comes with their own separate strength score, which states how “strong” or secure the password is. Keep in mind, this strength score is compared to other generally weak passwords; you would not want to use these passwords as a basis for your password.</p>
 <pre class="r"><code>strength &lt;- passwords %&gt;%
   arrange(desc(strength)) %&gt;% 
   head(15)
 
-weak &lt;- passwords %&gt;%
-  arrange(desc(strength)) %&gt;% 
-  tail(492) %&gt;%
-  head(25)
-
 ggplot(strength, aes(x = password, y = strength)) +
   geom_bar(aes(reorder(password, strength)), stat = &quot;identity&quot;) +
-  coord_flip()</code></pre>
-<p><img src="index_files/figure-html/unnamed-chunk-4-1.png" width="672" /></p>
-<pre class="r"><code>ggplot(weak, aes(x = password, y = offline_crack_sec)) +
-  geom_bar(aes(reorder(password, strength)), stat = &quot;identity&quot;) +
-  coord_flip()</code></pre>
-<p><img src="index_files/figure-html/unnamed-chunk-4-2.png" width="672" /></p>
-<pre class="r"><code>strength</code></pre>
-<pre><code>## # A tibble: 15 x 9
-##     rank password category value time_unit offline_crack_s… rank_alt strength
-##    &lt;dbl&gt; &lt;chr&gt;    &lt;chr&gt;    &lt;dbl&gt; &lt;chr&gt;                &lt;dbl&gt;    &lt;dbl&gt;    &lt;dbl&gt;
-##  1   336 rush2112 nerdy-p… 92.3  years            29.0           337       48
-##  2   149 ncc1701  nerdy-p…  2.56 years             0.806         149       46
-##  3   197 thx1138  nerdy-p…  2.56 years             0.806         198       46
-##  4   321 bond007  nerdy-p…  2.56 years             0.806         322       38
-##  5   359 ou812    nerdy-p… 17.3  hours             0.000622      360       36
-##  6   395 heka6w2  simple-…  2.56 years             0.806         396       36
-##  7   478 test123  simple-…  2.56 years             0.806         480       36
-##  8   344 red123   simple-…  3.7  weeks             0.0224        345       35
-##  9   406 jordan23 sport    92.3  years            29.3           407       34
-## 10    13 abc123   simple-…  3.7  weeks             0.0224         13       32
-## 11   463 123abc   simple-…  3.7  weeks             0.0224        465       32
-## 12   500 passw0rd passwor… 92.3  years            29.0           502       28
-## 13    26 trustno1 simple-… 92.3  years            29.0            26       25
-## 14   407 eagle1   simple-…  3.7  weeks             0.0224        408       21
-## 15   274 8675309  nerdy-p…  3.09 hours             0.000111      275       19
-## # … with 1 more variable: font_size &lt;dbl&gt;</code></pre>
-<pre class="r"><code>weak</code></pre>
-<pre><code>## # A tibble: 25 x 9
-##     rank password category value time_unit offline_crack_s… rank_alt strength
-##    &lt;dbl&gt; &lt;chr&gt;    &lt;chr&gt;    &lt;dbl&gt; &lt;chr&gt;                &lt;dbl&gt;    &lt;dbl&gt;    &lt;dbl&gt;
-##  1    22 superman name      6.91 years                 2.17       22       10
-##  2    66 computer nerdy-p…  6.91 years                 2.17       66       10
-##  3   111 maverick cool-ma…  6.91 years                 2.17      111       10
-##  4   293 nicholas name      6.91 years                 2.17      294       10
-##  5   305 qwertyui simple-…  6.91 years                 2.17      306       10
-##  6   308 dolphins animal    6.91 years                 2.17      309       10
-##  7   381 lifehack cool-ma…  6.91 years                 2.17      382       10
-##  8   389 platinum cool-ma…  6.91 years                 2.17      390       10
-##  9   398 garfield name      6.91 years                 2.17      399       10
-## 10   450 redwings sport     6.91 years                 2.17      452       10
-## # … with 15 more rows, and 1 more variable: font_size &lt;dbl&gt;</code></pre>
-<p>We can see that in the top 15 strongest passwords on the list there is a trend. For the first few, the strongest passwords are simple passwords with just a word and then numbers after it. This makes sure that the password is easy to remember but hard to break.</p>
+  coord_flip() +
+  xlab(&quot;Strength&quot;) +
+  ylab(&quot;Password&quot;) +
+  ggtitle(&quot;Strongest Passwords&quot;)</code></pre>
+<p><img src="index_files/figure-html/unnamed-chunk-4-1.png" width="672" />
+This graph shows the top 15 strongest passwords in the data set. We can see a general trend with these top 15 passwords as well. For the most part, they all have letters and numbers; sometimes it is a phrase followed by numbers or a phrase where some of the letters are replaced with numbers. These “strong” passwords seem to more closely resembled the types of passwords we are encouraged to have, which should include letters and numbers.</p>
 <p>#Conclusion</p>
-<p>TBD</p>
+<p>Looking at these graphs and tables gives us a general view on what (not) to do when creating passwords. Do not make the password just numbers, as that is easily solvable. Try not to make the password a name, as those are the most common password category. And if you want your password to be secure, make it a combination of letters and numbers, as those seem to be the strongest passwords of the bunch. If you want an easy guideline for creating passwords, here is a handy <a href="index_files/PasswordComic.png">comic</a> that will help you understand the basics a bit better, created by xkcd.</p>
 </div>

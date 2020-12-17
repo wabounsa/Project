@@ -27,7 +27,7 @@ The **writer** the writer, or writers, of the book/episode.
 The **director** the director of the episode. 
 The **imbd_rating** the IMDB rating for the episode, or how people thought about it.
 
-```{r, message=FALSE, echo=FALSE,results = FALSE}
+```{r, message=FALSE,results = FALSE}
 library(tidyverse)
 tuesdata <- tidytuesdayR::tt_load('2020-08-11')
 tuesdata <- tidytuesdayR::tt_load(2020, week = 33)
@@ -38,7 +38,7 @@ avatar <- tuesdata$avatar
 
 In other kids shows, like *Power Rangers*, the main characters and will yell say their special moves often, enough to have it ingrained into your head. How often does *Avatar: The Last Airbender* do this, and who does it the most?
 
-```{r, message=FALSE, echo=FALSE,results = FALSE}
+```{r, message=FALSE,results = FALSE}
 library(tidyverse)
 library(tvthemes)
 
@@ -85,37 +85,43 @@ We took the data and filtered it specifically to only when they say their specif
 
 *Avatar: The Last Airbender* is a great TV show, but as with anything, there will always be favorites and least favorites. What episodes are the highest and lowest rated, and what is it for each season?
 
-```{r, message=FALSE, echo=FALSE,results = FALSE}
+```{r, message=FALSE,results = FALSE}
 library(tidyverse)
+library(dplyr)
 
 episode <- avatar %>%
   select(imdb_rating,chapter,book) %>%
   distinct() %>%
   filter(!is.na(imdb_rating))
+
 book1 <- episode %>%
   filter(book == "Water") %>%
-  arrange(imdb_rating, descending = TRUE)
+  arrange(imdb_rating)
+
 book2 <- episode %>%
   filter(book == "Fire") %>%
-  arrange(imdb_rating, descending = TRUE)
+  arrange(imdb_rating)
 book3 <- episode %>%
   filter(book == "Earth") %>%
-  arrange(imdb_rating, descending = TRUE)
+  arrange(imdb_rating)
 bestworst <- rbind(head(book1, 1), tail(book1, 1), head(book2, 1), tail(book2, 1), head(book3, 1), tail(book3, 1))
 
 ggplot(data = bestworst, aes(x = chapter, y = imdb_rating, fill = book)) +
   geom_bar(stat = "identity") +
   theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) +
-  scale_fill_avatar("WaterTribe")
+  scale_fill_avatar("WaterTribe") +
+  ggtitle("Best and Worst Episodes Each Season") +
+  xlab("Episode Name") +
+  ylab("Rating")
 ```
-From the graph, we can see that the episodes that are the final are the most well recieved for each season, which makes sense, the finals usually are the climax where everything happens. The episodes that are the lowest for each season all have something in common. They are all, for the most part, filler episodes. No plot is driven and they are mostly there to slow down the pace, so while not terrible episodes, it's understandable why they are the least liked.
+From the graph, we can see the highest and lowest rated shows for each book, or season. There is a trend in the highest rated episodes that is not very apparent unless you are a fan of the show. "THe Siege of the North", "The Crossroads of Destiny", and "Sozin's Comet" are all the final episode of their respective season. That would explain why those episodes are the highest for their season; they are the climactic end. On the other side, the lowest rated episodes for their perspective season all also have a trend. "Avatar Day", "Nightmares and Daydreams", and "The Great Divide" are all filler episodes, or episodes where the plot moves the slowest. In all these episodes, the characters are not driving the plot forward by having them learn new elements or come up with plans to defeat the Firelord. The characters are instead dealing with "sidequest". For example, "The Great Divide" is the main cast of characters escorting two tribes across a ravine, and in "Avatar Day" the main cast is solving a murder mystery. So these characters are the lowest rated for their seasons because they carry less plot importance than the other episodes.
 
 
 ## Ratings Over Time
 
 Does *Avatar: The Last Airbender* improve or get worst with time? As with any shows, it'll have valleys and peaks, so where do they occur?
 
-```{r, message=FALSE, echo=FALSE,results = FALSE}
+```{r, message=FALSE,results = FALSE}
 library(patchwork)
 library(tvthemes)
 
@@ -126,7 +132,7 @@ seasonrating <- avatar %>%
 waterrating <- seasonrating %>%
   filter(book_num == 1) %>%
   filter(!is.na(imdb_rating)) %>%
-  ggplot(aes(x = chapter_num, y = imdb_rating, color = imdb_rating)) +
+  ggplot(aes(x = chapter_num, y = imdb_rating)) +
   geom_point() +
   geom_line() +
   xlab("Episode Number") +
@@ -135,7 +141,7 @@ waterrating <- seasonrating %>%
 
 earthrating <- seasonrating %>%
   filter(book_num == 2) %>%
-  ggplot(aes(x = chapter_num, y = imdb_rating, color = imdb_rating)) +
+  ggplot(aes(x = chapter_num, y = imdb_rating)) +
   geom_point() +
   geom_line() +
   xlab("Episode Number") +
@@ -145,16 +151,14 @@ earthrating <- seasonrating %>%
 firerating <- seasonrating %>%
   filter(book_num == 1) %>%
   filter(!is.na(imdb_rating)) %>%
-  ggplot(aes(x = chapter_num, y = imdb_rating, color = imdb_rating)) +
+  ggplot(aes(x = chapter_num, y = imdb_rating)) +
   geom_point() +
   geom_line() +
   xlab("Episode Number") +
   ylab("Rating") +
   ggtitle("Season 3 Ratings")
 
-waterrating
-earthrating
-firerating
+waterrating / earthrating / firerating
 
 ```
 We can see from the graphs for the episodes and the best and worst graph from the previous question that most seasons follow a trend. At the beginning of the season, the rating is mid, it fluctuates and takes a large dip towards the middle, usually in one of the aforementioned worst episodes, and the climbs to the climax at the final of the season.
@@ -164,7 +168,8 @@ We can see from the graphs for the episodes and the best and worst graph from th
 
 Who talks the most in the show? There are many candidates, like Azula and her silver tongue, Katara saying the opening each episode, and Sokka with his witty quips. But who says the most lines in the show?
 
-```{r, message=FALSE, echo=FALSE,results = FALSE}
+
+```{r, message=FALSE,results = FALSE}
 library(ggplot2)
 library(patchwork)
 library(tvthemes)
@@ -183,7 +188,10 @@ waterlines <- lines %>%
   theme_avatar() +
   coord_flip() +
   scale_fill_avatar(palette = "WaterTribe") +
-  theme(legend.position = "none")
+  theme(legend.position = "none") +
+  xlab("# of Lines") +
+  ylab("Character") +
+  ggtitle("Chattiest Character: Season 2")
 
 earthlines <- lines %>%
   filter(book == "Earth") %>%
@@ -193,7 +201,10 @@ earthlines <- lines %>%
   theme_avatar() +
   coord_flip() +
   scale_fill_avatar(palette = "EarthKingdom") +
-  theme(legend.position = "none")
+  theme(legend.position = "none") +
+  xlab("# of Lines") +
+  ylab("Character") +
+  ggtitle("Chattiest Character: Season 2")
 
 firelines <- lines %>%
   filter(book == "Fire") %>%
@@ -203,10 +214,14 @@ firelines <- lines %>%
   theme_avatar() +
   coord_flip() +
   scale_fill_avatar(palette = "FireNation") +
-  theme(legend.position = "none")
+  theme(legend.position = "none") +
+  xlab("# of Lines") +
+  ylab("Character") +
+  ggtitle("Chattiest Character: Season 3")
 
-waterlines + earthlines + firelines
+waterlines / earthlines / firelines
 ```
+
 At the beginning of the show, we can see that Aang, Katara, and Sokka did most of the talking, as they were the main characters and the ones talking the most. Zuko and Iroh were also there, but they were mostly side characters or antagonist for the most part. We can see in the second season that the three main characters talk the most, but this time Sokka takes the number one spot. Toph is also introduced this season so she is also on the top 5, and weirdly enough, Iroh is on the list and not Zuko. In the third season, Sokka still takes the top spot, but Katara has been moved down and Zuko takes top 3 thanks to him joining the main team. Iroh has been kicked off for Toph, but that makes sense, since everyone in the top 5 are part of the main team.
 
 
@@ -215,17 +230,14 @@ At the beginning of the show, we can see that Aang, Katara, and Sokka did most o
 The writers of this show are some of the best. They are able to write a compelling story line while adding funny jokes and character growth along the way. But who, or which group, has the highest average rated episodes?
 
 ```{r, message=FALSE}
+
 writer <- avatar %>%
   select(book_num, chapter_num,writer, imdb_rating) %>%
   group_by(writer) %>%
   summarise(score = mean(imdb_rating)) %>%
   filter(!is.na(score))  %>%
-  arrange(score, descending = TRUE)
-   #mutate(str_extract(writer, regex("[^,]*{1}")))
-
+  arrange(score)
 writer
-
-
 ggplot(data = tail(writer, 10), aes(x = writer, y = score, fill = writer)) +
   geom_bar(aes(reorder(writer, score)), stat = 'identity') +
   xlab("Average IMDB Score") +
@@ -233,11 +245,10 @@ ggplot(data = tail(writer, 10), aes(x = writer, y = score, fill = writer)) +
   scale_fill_discrete(labels = c("A. Ehasz, DiMartino, Konietzko","Group of Writers", "Konietzko, DiMartino", "DiMartino, Konietzko", "E. Ehasz, Hedrick", "DiMartino", "E.Ehasz", "Hedrick", "Chan", "E.Ehasz, Hedrick, A.Ehasz, O'Bryan")) +
   ggtitle("Average IMDB Score for Each Writer(s)") +
   theme(axis.text.x = element_blank())
-
 ```
-We can see that the best episodes are written by a group of writers. Interestingly, We can see two people with the same last name, Ehasz. They are actually married and helped write the show together.
+We can see that the best episodes are written by a group of writers. Interestingly, We can see two people with the same last name, Ehasz. They are actually married and helped write the show together. Interestingly, one of the highest rated episodes created by a group of writers is an episode called "Tales from Ba Sing Se". It is an episode that is a collection of short stories, which explains the high volume of writers for that particular episode, and the high ratings the episode received.
 
 ##Conclusion
-TBD
+The Avatar: The Last Airbender data set has so much to look into thanks to its extensive data. We found out that despite the show being called "The Last Airbender", airbending is not mentioned as much from the airbender as waterbending is from the waterbender. From studying episodes, we can find the general trend that each season takes, where it starts out mid, takes a dip in the middle due to a filler episode, and reaches a high point in ratings during the climactic final. We can see that the most chattiest characters Aang and Sokka, two characters that are prevalent in all three seasons. And from looking at the ratings from writers, we can see that while there are standout writers, the best episodes are from a combination of writers.
 
 

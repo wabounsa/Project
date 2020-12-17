@@ -2,45 +2,38 @@
 title: "Password Data Analysis"
 author: "William A. Bounsavy"
 date: '2020-12-08'
-slug: password-data-analysis
+output: pdf_document
 categories: []
 tags: []
+slug: password-data-analysis
 ---
 
 The password data set from tidytuesday contains a list of many commonly used passwords.
 
-```{r}
+```{r, message=FALSE,include=FALSE}
 library(tidyverse)
 tuesdata <- tidytuesdayR::tt_load('2020-01-14') 
 tuesdata <- tidytuesdayR::tt_load(2020, week = 3)
 passwords <- tuesdata$passwords
-passwords 
 ```
 
 
 ## Easiest Passwords to Crack
 
-The data set may sort the data set on most common, but what about easiest to crack. Probably the first 10, since they are the most common, but what about the rest?
+The data set may sort the data set on most common, but what about easiest to crack. Probably the first 10, since they are the most common, but what about the rest? Keep in mind, we will be using the value variable as the basis for this analysis, which, in conjunction with the time_unit variable, states how fast it is to guess or solve this password online.
 
 ```{r}
-crack <- passwords %>%
-  tail(497) %>%
-  filter(time_unit == "minutes") %>%
-  arrange(value) %>%
-  mutate(seconds = value*60)
-
 seconds <- passwords %>%
   tail(497) %>%
   filter(time_unit == "seconds") %>%
   arrange(value)
 
 seconds
-crack
 ```
 
-We can see with the two data sets that a lot of the passwords that are easily crackable have around the same value to be cracked.
+When we filter through the passwords to find easiest to crack, we get a uniform time of 11.11 seconds, and when we look at the passwords themselves, we can see an obvious pattern. They are all in the simple-alphanumeric category, which means that they are just a string of numbers. And if you look more closely at the passwords themselves, you can see just how simple they are. The most variable of them only use two different numbers in the password, leading to very simple and easily crackable passwords.
 
-## Easiest Passwords to Crack
+## Common Password Categories
 
 The passwords data set also gives each password a category, as in whether it is password-related, an animal, or simple-alphanumeric. What category is the most commonly used?
 
@@ -52,37 +45,32 @@ dat <- passwords %>%
 
 ggplot(data = dat, aes(x =  category, y = count)) +
   geom_bar(aes(reorder(category, count)),stat = "identity") +
-  coord_flip()
+  coord_flip() +
+  xlab("Number of Passwords") +
+  ylab("Password Category") +
+  ggtitle("Most Common Passwords by Category")
 ```
-The category commonly used and is easiest to crack seems to be the name category, it almost doubles the cool-macho category. This makes sense, peoplelike to use names when they are making their password. Another interesting thing is that simple-alphanumeric passwords are also at the top of the list. This is probably due to them being easy to remember, things like 1111 and 2222 and 1234 can be easily written down and remembered. Phones use those passwords a lot, in fact.
+To come up with this chart, we simply counted how many common passwords were in each category. The **category** variable tells us the theme of the password, for example, food passwords would be "burger" or "hotdog" while animal passwords would be "elephant" or "giraffe". We can see from the graph that the most common password category is the *names* category, which include passwords like "mike" or "george" or "tom". This would make since to be very high on the list; it is easier to remember your own name or the name of a loved one than it is to remember a random string of numbers and letters. However, since this is the highest category of names in the most common passwords data set, it would be best to avoid using names as passwords since they are so common. Interestingly, the *cool-macho* category appears high on the list, which includes names like "shadow" and "buster".
 
 ## Strongest Password
 
-We know which categories are the most common and the easiest ones to crack, but what about the strongest password? Each password in the data set comes with their own separate strength score, so which one is the strongest?
+We know which categories are the most common and the easiest ones to crack, but what about the strongest password? Each password in the data set comes with their own separate strength score, which states how "strong" or secure the password is. Keep in mind, this strength score is compared to other generally weak passwords; you would not want to use these passwords as a basis for your password.
 
 ```{r}
 strength <- passwords %>%
   arrange(desc(strength)) %>% 
   head(15)
 
-weak <- passwords %>%
-  arrange(desc(strength)) %>% 
-  tail(492) %>%
-  head(25)
-
 ggplot(strength, aes(x = password, y = strength)) +
   geom_bar(aes(reorder(password, strength)), stat = "identity") +
-  coord_flip()
+  coord_flip() +
+  xlab("Strength") +
+  ylab("Password") +
+  ggtitle("Strongest Passwords")
 
-ggplot(weak, aes(x = password, y = offline_crack_sec)) +
-  geom_bar(aes(reorder(password, strength)), stat = "identity") +
-  coord_flip()
-
-strength
-weak
 ```
-We can see that in the top 15 strongest passwords on the list there is a trend. For the first few, the strongest passwords are simple passwords with just a word and then numbers after it. This makes sure that the password is easy to remember but hard to break.
+This graph shows the top 15 strongest passwords in the data set. We can see a general trend with these top 15 passwords as well. For the most part, they all have letters and numbers; sometimes it is a phrase followed by numbers or a phrase where some of the letters are replaced with numbers. These "strong" passwords seem to more closely resembled the types of passwords we are encouraged to have, which should include letters and numbers. 
 
 #Conclusion
 
-TBD
+Looking at these graphs and tables gives us a general view on what (not) to do when creating passwords. Do not make the password just numbers, as that is easily solvable. Try not to make the password a name, as those are the most common password category. And if you want your password to be secure, make it a combination of letters and numbers, as those seem to be the strongest passwords of the bunch. If you want an easy guideline for creating passwords, here is a handy [comic](index_files/PasswordComic.png) that will help you understand the basics a bit better, created by xkcd.

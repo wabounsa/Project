@@ -18,8 +18,8 @@ geometry: margin=1in
 email: austinbounsavy@gmail.com
 phone: 479-531-0955
 location: "Rogers, Arkansas"
-github: svmiller
-linkedin: "steven-miller-05b6851b3"
+github: wabounsa
+linkedin: "william-bounsavy-9932001ba"
 mainfont: cochineal
 sansfont: Fira Sans
 # monofont: Fira Code # I want to use this, but seems to choke on @
@@ -41,25 +41,14 @@ photobigness: 1.75cm
 
 # Professional Experience
 
-## World Wrestling Federation
+## Kumon Math & Reading Center
 
-- Wrestled Shawn Michaels to a countout draw in front of 80,000 fans in Wembley Stadium at Summerslam 1992.
-- Carried Tito Santana like dead weight to tag team prominence, before [tiring of him at Wrestlemania V](https://www.youtube.com/watch?v=VKnWAxg4R68).
-- Had two amazing entrance themes where somehow the least amazing of the two is [the one done by Robbie Dupree](https://www.youtube.com/watch?v=1bNr3144GDI).
-- Successfully cultivated "The Model" persona, relocating to Cocoa Beach for a gimmick that was years ahead of its time.
-- Launched successful line of cologne, *Arrogance*, and advertised it in [some amazing vignettes](https://www.youtube.com/watch?v=zm9AbH7CnBc).
-- [Temporarily blinded Jake "The Snake" Roberts](https://www.youtube.com/watch?v=cs7sxJboGWA), incapacitating him for the better part of 1990.
+- Tutored children in math and reading for 2+ years
+- Organized and started community events
 
-## American Wrestling Association
+## P&N Oriental Store
 
-- [Beat Jumbo goddamn Tsuruta for AWA World Heavyweight Championship](https://www.youtube.com/watch?v=c3O_jGZd6EI). 
-- Wrestled several matches with then-NWA World Champion Ric Flair.
-
-## Other Territories
-
-- Successfully teamed with Roddy Piper, winning a total of four tag team championships.
-- Feature attraction in multiple territories in Canada (e.g. Stampede Wrestling), Puerto Rico (World Wrestling Council), and the United States (e.g. Georgia Championship Wrestling)
-
+- Worked as a cashier for 1+ year
 
 
 :::
@@ -71,31 +60,26 @@ photobigness: 1.75cm
 
 # Education
 
-## Postgraduate Program
+## High-School
 
-Ph.D. in Boston Crab Studies
+Graduated from Rogers New Technology High School
  
 ## Undergraduate Program
 
-B.A. in something or other.
+Currently working towards a B.A. in Data Science
 
 # Technical Skills (or Accomplishments)
 
-Put your technical skills here, or, if you're Rick Martel, list your pro-wrestling accolades.
-
-## Championships
-
-- AWA World Heavyweight Championship (1984)
-- NWA Pacific Northwest Heavyweight Championship (1980)
-- WWF Tag Team Championship (2x with Tony Garea, 1x with dead-weight Tito Santana)
-- NWA Pacific Northwest Tag Team Championship (3x, with Roddy Piper in 1980)
-- WWC North American Tag Team Championship (with Pierre Martel)
+- Certification in Microsoft Word
+- Certification in Microsoft PowerPoint
+- Certification in Microsoft Excel
+- Former President of the Geekery Club in Highschool
 
 ## Awards and Distinctions
 
-- Pro Wrestling Hall of Fame (Class of 2015)
-- Ranked #48 of the 500 best singles wrestlers ("PWI Years", 2003)
-- Ranked #70 (with dead-weight Tito Santana) of the 100 best tag teams ("PWI Years", 2003)
+- Graduated with Honors
+- Governer's Scholarship
+- Arkansas Academic Challenge Scholarship
 
 :::
 ::::::
